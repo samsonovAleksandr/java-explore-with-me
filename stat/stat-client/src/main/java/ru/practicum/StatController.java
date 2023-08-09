@@ -16,15 +16,15 @@ public class StatController {
 
     @PostMapping("/hit")
     public ResponseEntity<Object> create(@RequestBody EndpointHitDto endpointHitDto) {
-        return client.create(endpointHitDto);
+        return client.post("/hit", endpointHitDto);
     }
 
     @GetMapping("/stats")
     public ResponseEntity<Object> get(@RequestParam(value = "start") String start,
                                       @RequestParam(value = "end") String end,
                                       @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
-                                      @RequestParam(value = "uris") String[] uris) {
-        return client.get(start, end, uris, unique);
+                                      @RequestParam(value = "uris", required = false) String[] uris) {
+        return client.get("/stats", start, end, uris, unique);
     }
 
 }

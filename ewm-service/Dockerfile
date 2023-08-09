@@ -1,3 +1,5 @@
 FROM amazoncorretto:11-alpine-jdk
-COPY target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+VOLUME /tmp
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["sh", "-c", "java ${JAR_FILE} -jar /app.jar"]

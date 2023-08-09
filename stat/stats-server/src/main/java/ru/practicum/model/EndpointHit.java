@@ -26,7 +26,7 @@ public class EndpointHit {
     private String uri;
     @Column(name = "ip")
     private String ip;
-    @Column(name = "time")
+    @Column(name = "time_endpoint")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
+    private LocalDateTime timeEndpoint;
 }

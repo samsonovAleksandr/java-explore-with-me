@@ -62,10 +62,6 @@
 							<artifactId>checkstyle</artifactId>
 							<version>10.3</version>
 						</dependency>
-						<dependency>
-							<groupId>org.springframework.boot</groupId>
-							<artifactId>spring-boot-starter-actuator</artifactId>
-						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>

@@ -27,7 +27,7 @@ public class StatController {
     public List<StatsDto> get(@RequestParam(value = "start") String start,
                               @RequestParam(value = "end") String end,
                               @RequestParam(value = "unique", defaultValue = "false") Boolean unique,
-                              @RequestParam(value = "uris") String[] uris) {
+                              @RequestParam(value = "uris", required = false) String[] uris) {
         return service.get(start, end, uris, unique);
     }
 
