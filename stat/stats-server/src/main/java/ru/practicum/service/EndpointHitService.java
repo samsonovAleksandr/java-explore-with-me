@@ -21,8 +21,6 @@ public class EndpointHitService {
     @Autowired
     EndpointHitMapping mapper;
 
-    String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
     public EndpointHitDto create(EndpointHitDto endpointHitDto) {
         return mapper.toEndpointHitDto(repository.save(mapper.toEndpointHit(endpointHitDto)));
     }
@@ -53,7 +51,7 @@ public class EndpointHitService {
 
 
     private LocalDateTime timeParse(String time) {
-        return LocalDateTime.parse(time, DateTimeFormatter.ofPattern(TIME_FORMAT));
+        return LocalDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 
