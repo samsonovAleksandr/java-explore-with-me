@@ -1,52 +1,57 @@
 package ru.practicum.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHitDto;
 import ru.practicum.StatsDto;
-import ru.practicum.model.EndpointHitMapping;
+import ru.practicum.mapper.EndpointHitMapping;
 import ru.practicum.repository.EndpointHitRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class EndpointHitService {
-    @Autowired
-    EndpointHitRepository repository;
 
-    @Autowired
-    EndpointHitMapping mapper;
+    private final EndpointHitRepository repository;
+
+
+    private final EndpointHitMapping mapper;
+
+    public EndpointHitService(EndpointHitRepository repository, EndpointHitMapping mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     public EndpointHitDto create(EndpointHitDto endpointHitDto) {
         return mapper.toEndpointHitDto(repository.save(mapper.toEndpointHit(endpointHitDto)));
     }
 
+    @Transactional
     public List<StatsDto> get(String start, String end, String[] uris, Boolean unique) {
-        List<StatsDto> statsList = new ArrayList<>();
+        List<StatsDto> statsDtoList = new ArrayList<>();
         if (uris == null) {
             if (!unique) {
-                statsList = repository.getStats(timeParse(start), timeParse(end));
+                statsDtoList = repository.getStats(timeParse(start), timeParse(end));
             } else {
-                statsList = repository.getStatsUnique(timeParse(start), timeParse(end));
+                statsDtoList = repository.getStatsUnique(timeParse(start), timeParse(end));
             }
         } else {
+            List<String> uri = Arrays.asList(uris);
             if (!unique) {
-                for (String uri : uris) {
-                    statsList.add(repository.getStatsUri(uri, timeParse(start), timeParse(end)));
-                }
-                statsList.sort(Comparator.comparing(StatsDto::getHits).reversed());
+                statsDtoList = repository.getStatsUri(timeParse(start), timeParse(end), uri);
+
             } else {
-                for (String uri : uris) {
-                    statsList.add(repository.getStatsUriUnique(uri, timeParse(start), timeParse(end)));
-                }
-                statsList.sort(Comparator.comparing(StatsDto::getHits).reversed());
+                statsDtoList = repository.getStatsUriUnique(timeParse(start), timeParse(end), uri);
+
             }
+            statsDtoList.sort(Comparator.comparing(StatsDto::getHits).reversed());
         }
-        return statsList;
+        return statsDtoList;
     }
 
 

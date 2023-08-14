@@ -18,6 +18,7 @@ public class StatController {
 
     private EndpointHitService service;
 
+
     @PostMapping("/hit")
     public EndpointHitDto create(@RequestBody EndpointHitDto endpointHitDto) {
         return service.create(endpointHitDto);

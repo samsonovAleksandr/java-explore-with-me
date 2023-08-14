@@ -1,14 +1,15 @@
-package ru.practicum.model;
+package ru.practicum.mapper;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.practicum.EndpointHitDto;
+import ru.practicum.model.EndpointHit;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Service
+@Component
 @AllArgsConstructor
 public class EndpointHitMapping {
 

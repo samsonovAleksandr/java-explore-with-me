@@ -1,10 +1,19 @@
 package ru.practicum;
 
-public interface StatsDto {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    String getApp();
+@Data
+@AllArgsConstructor
+@Builder
+@NoArgsConstructor
+public class StatsDto {
 
-    String getUri();
+    String app;
 
-    Long getHits();
+    String uri;
+
+    Long hits;
 }
