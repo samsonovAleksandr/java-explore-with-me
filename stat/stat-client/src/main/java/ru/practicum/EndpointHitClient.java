@@ -19,7 +19,7 @@ public class EndpointHitClient {
             .requestFactory(HttpComponentsClientHttpRequestFactory::new)
             .build();
 
-    protected ResponseEntity<Object> get(String path, String start, String end, String[] uris, Boolean unique) {
+    public ResponseEntity<Object> get(String path, String start, String end, String[] uris, Boolean unique) {
         StringBuilder fullPath = new StringBuilder().append("http://localhost:9090").append(path);
         fullPath.append("?start=").append(start).append("&end=").append(end);
         if (uris != null) {
@@ -32,7 +32,7 @@ public class EndpointHitClient {
         return makeAndSendRequest(HttpMethod.GET, fullPath.toString(), null);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, T body) {
+    public  <T> ResponseEntity<Object> post(String path, T body) {
         return makeAndSendRequest(HttpMethod.POST, "http://localhost:9090" + path, body);
     }
 

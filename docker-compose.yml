@@ -9,11 +9,9 @@ services:
     depends_on:
       - stats-db
     environment:
-        - DB_NAME=postgres
-        - DB_HOST=stats-db
-        - DB_PORT=5432
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
   stats-db:
     image: postgres:14-alpine
     build:
@@ -21,11 +19,11 @@ services:
       dockerfile: Dockerfile.postgres
     container_name: stats-db
     ports:
-      - "5432:5432"
+      - "6542:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgresStat
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=stats
       - POSTGRES_HOST_AUTH_METHOD=trust
 
 
@@ -38,17 +36,21 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
     environment:
-      - SERVER_URL=http://server:9090
+      - EWM_STATS_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/service
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+
 
 
   ewm-db:
     image: postgres:14-alpine
     container_name: ewm-db
-    volumes:
-      - /var/lib/postgresql/data/
+    ports:
+      - "6541:5432"
     environment:
+      - POSTGRES_DB=service
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-      - POSTGRES_USER=root
-      - POSTGRES_DB=postgresService
+      - POSTGRES_HOST_AUTH_METHOD=trust
