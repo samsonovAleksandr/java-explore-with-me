@@ -32,4 +32,8 @@ public class StatController {
         return service.get(start, end, uris, unique);
     }
 
+    public Long getStats(@RequestParam String uris) {
+        return service.getViews(uris);
+    }
+
 }

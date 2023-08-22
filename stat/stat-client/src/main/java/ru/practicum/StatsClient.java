@@ -75,6 +75,6 @@ public class StatsClient extends BaseClient {
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
                 .build();
-        return post(hitDto);
+        return post("/hit", hitDto);
     }
 }

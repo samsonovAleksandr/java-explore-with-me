@@ -39,4 +39,9 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
             "GROUP BY e.app, e.uri " +
             "ORDER BY COUNT(e.ip) DESC ")
     List<StatsDto> getStats(LocalDateTime start, LocalDateTime end);
+
+    @Query("select new ru.practicum.StatsDto(app, uri, count(distinct uri) as hits) from EndpointHit " +
+            "where uri = ?1 " +
+            "group by app, uri order by hits")
+    StatsDto findStatsUrisAndUnique(String uris);
 }

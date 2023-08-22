@@ -54,6 +54,10 @@ public class EndpointHitService {
         return statsDtoList;
     }
 
+    public Long getViews(String uris) {
+        return repository.findStatsUrisAndUnique(uris).getHits();
+    }
+
 
     private LocalDateTime timeParse(String time) {
         return LocalDateTime.parse(time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
