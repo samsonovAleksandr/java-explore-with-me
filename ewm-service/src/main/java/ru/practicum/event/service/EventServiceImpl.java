@@ -208,11 +208,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDto update(Long userId, Long eventId, UpdateEventDto eventDto) {
         Event event = getEventById(eventId);
-        if (!userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", userId)))
-                .getId().equals(event.getInitiator().getId())) {
-            throw new ValidationException("Вы не являетесь инициатором события.");
-        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         if (event.getState() == State.PUBLISHED) {
             throw new ConflictException("Невозможно изменить уже опубликованное событие");
         }
