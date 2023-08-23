@@ -32,6 +32,7 @@ public class StatController {
         return service.get(start, end, uris, unique);
     }
 
+    @GetMapping("/stats/views")
     public Long getStats(@RequestParam String uris) {
         return service.getViews(uris);
     }
