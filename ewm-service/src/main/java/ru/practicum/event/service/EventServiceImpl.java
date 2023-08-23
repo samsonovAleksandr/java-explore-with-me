@@ -170,9 +170,12 @@ public class EventServiceImpl implements EventService {
                     sort, PageRequest.of(pageNumber, size));
         }
         client.createHit(request);
-        events = events.stream()
-                .peek(event -> event.setViews(client.getStatsUnique(request.getRequestURI()).getBody()))
-                .collect(Collectors.toList());
+        List<Event> list = new ArrayList<>();
+        for (Event event : events) {
+            event.setViews(client.getStatsUnique(request.getRequestURI()).getBody());
+            list.add(event);
+        }
+        events = list;
         repository.saveAll(events);
         return toEventDtoList(events);
     }
