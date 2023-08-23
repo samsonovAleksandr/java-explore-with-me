@@ -14,17 +14,17 @@ import java.util.List;
 public class CompilationMapper {
     public static Compilation toCompilation(NewCompilationDto compilationDto) {
         return Compilation.builder()
-            .title(compilationDto.getTitle())
-            .pinned(compilationDto.getPinned())
-            .build();
+                .title(compilationDto.getTitle())
+                .pinned(compilationDto.getPinned())
+                .build();
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> shortDtos) {
         return CompilationDto.builder()
-            .id(compilation.getId())
-            .pinned(compilation.getPinned())
-            .title(compilation.getTitle())
-            .events(shortDtos)
-            .build();
+                .id(compilation.getId())
+                .pinned(compilation.getPinned())
+                .title(compilation.getTitle())
+                .events(shortDtos)
+                .build();
     }
 }

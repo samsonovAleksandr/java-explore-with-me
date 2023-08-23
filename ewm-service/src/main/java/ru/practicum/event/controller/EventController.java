@@ -12,7 +12,6 @@ import ru.practicum.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class EventController {
                                     @RequestParam(defaultValue = "0") Integer from,
                                     @RequestParam(defaultValue = "10") Integer size,
                                     HttpServletRequest request) {
-        SearchEventParams params = new SearchEventParams(text,paid, catsId, startStr,endStr,onlyAvailable,sortStr);
+        SearchEventParams params = new SearchEventParams(text, paid, catsId, startStr, endStr, onlyAvailable, sortStr);
         return service.getAllPublic(params, from, size, request);
 
     }

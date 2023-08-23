@@ -278,15 +278,15 @@ public class EventServiceImpl implements EventService {
             event.setParticipantLimit(eventDto.getParticipantLimit());
         }
 
-            if (eventDto.getStateAction() == StateAction.PUBLISH_EVENT) {
-                event.setState(State.PUBLISHED);
-                event.setPublishedOn(LocalDateTime.now());
-            } else if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
-                    eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
-                event.setState(State.CANCELED);
-            } else if (eventDto.getStateAction() == StateAction.SEND_TO_REVIEW) {
-                event.setState(State.PENDING);
-            }
+        if (eventDto.getStateAction() == StateAction.PUBLISH_EVENT) {
+            event.setState(State.PUBLISHED);
+            event.setPublishedOn(LocalDateTime.now());
+        } else if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
+                eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
+            event.setState(State.CANCELED);
+        } else if (eventDto.getStateAction() == StateAction.SEND_TO_REVIEW) {
+            event.setState(State.PENDING);
+        }
 
         if (eventDto.getRequestModeration() != null) {
             event.setRequestModeration(eventDto.getRequestModeration());

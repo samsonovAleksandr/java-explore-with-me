@@ -32,13 +32,13 @@ public class UserServiceImpl implements UserService {
         int pageNumber = (int) Math.ceil((double) from / size);
         if (ids != null) {
             return repository.findByIdIn(ids, PageRequest.of(pageNumber, size, Sort.by("id").ascending()))
-                .stream().map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
+                    .stream().map(UserMapper::toUserDto)
+                    .collect(Collectors.toList());
         } else {
             return repository.findAll(PageRequest.of(pageNumber, size, Sort.by("id").ascending()))
-                .stream()
-                .map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(UserMapper::toUserDto)
+                    .collect(Collectors.toList());
         }
     }
 

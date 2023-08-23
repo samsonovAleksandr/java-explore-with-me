@@ -1,6 +1,9 @@
 package ru.practicum.event.service;
 
-import ru.practicum.event.dto.*;
+import ru.practicum.event.dto.EventDto;
+import ru.practicum.event.dto.NewEventDto;
+import ru.practicum.event.dto.SearchEventParams;
+import ru.practicum.event.dto.UpdateEventDto;
 import ru.practicum.event.model.Event;
 
 import javax.servlet.http.HttpServletRequest;

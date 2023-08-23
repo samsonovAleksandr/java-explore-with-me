@@ -43,7 +43,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setEvents(getAllEvents(newCompilationDto.getEvents()));
         compilation = repository.save(compilation);
         return CompilationMapper.toCompilationDto(compilation,
-            getShortEvent(compilation.getEvents()));
+                getShortEvent(compilation.getEvents()));
     }
 
     @Override
@@ -52,14 +52,14 @@ public class CompilationServiceImpl implements CompilationService {
         int pageNumber = (int) Math.ceil((double) from / size);
         if (pinned == null) {
             return repository.findAll(PageRequest.of(pageNumber, size)).stream()
-                .map(compilation -> CompilationMapper.toCompilationDto(compilation,
-                    getShortEvent(compilation.getEvents())))
-                .collect(Collectors.toList());
+                    .map(compilation -> CompilationMapper.toCompilationDto(compilation,
+                            getShortEvent(compilation.getEvents())))
+                    .collect(Collectors.toList());
         } else {
             return repository.findByPinned(pinned, PageRequest.of(pageNumber, size)).stream()
-                .map(compilation -> CompilationMapper.toCompilationDto(compilation,
-                    getShortEvent(compilation.getEvents())))
-                .collect(Collectors.toList());
+                    .map(compilation -> CompilationMapper.toCompilationDto(compilation,
+                            getShortEvent(compilation.getEvents())))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -67,7 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional(readOnly = true)
     public CompilationDto getById(Long id) {
         Compilation compilation = repository.findById(id).orElseThrow(() ->
-            new NotFoundException("Данной подборки не существует"));
+                new NotFoundException("Данной подборки не существует"));
         return CompilationMapper.toCompilationDto(compilation, getShortEvent(compilation.getEvents()));
     }
 
@@ -81,7 +81,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public CompilationDto update(Long id, NewCompilationDto compilationDto) {
         Compilation compilation = repository.findById(id).orElseThrow(() ->
-            new NotFoundException("Данной подборки не существует"));
+                new NotFoundException("Данной подборки не существует"));
         if (compilationDto.getTitle() != null) {
             if (compilationDto.getTitle().isBlank() || compilationDto.getTitle().length() > 50) {
                 throw new ValidationException("Название не может быть пустым или больше 50");
@@ -102,8 +102,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public List<EventShortDto> getShortEvent(List<Event> events) {
         return events.stream().map(
-            event -> EventMapper.toEventShortDto(event, UserMapper.toUserShortDto(event.getInitiator()),
-                categoryMapper.toCategoryDto(event.getCategory()))).collect(Collectors.toList());
+                event -> EventMapper.toEventShortDto(event, UserMapper.toUserShortDto(event.getInitiator()),
+                        categoryMapper.toCategoryDto(event.getCategory()))).collect(Collectors.toList());
     }
 
     @Override

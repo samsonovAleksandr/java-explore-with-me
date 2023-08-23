@@ -34,8 +34,8 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDto> getAll(int from, int size) {
         int pageNumber = (int) Math.ceil((double) from / size);
         return repository.findAll(PageRequest.of(pageNumber, size, Sort.by("id").ascending()))
-            .stream().map(categoryMapper::toCategoryDto)
-            .collect(Collectors.toList());
+                .stream().map(categoryMapper::toCategoryDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -62,6 +62,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public Category getCategory(Long id) {
         return repository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
     }
 }

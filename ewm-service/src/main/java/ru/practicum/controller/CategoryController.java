@@ -42,7 +42,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/admin/categories/{categoryId}")
-    public CategoryDto updateCategory(@Positive @PathVariable("categoryId") Long id,@Valid @RequestBody CategoryDto categoryDto) {
+    public CategoryDto updateCategory(@Positive @PathVariable("categoryId") Long id, @Valid @RequestBody CategoryDto categoryDto) {
         return service.update(id, categoryDto);
     }
 }
