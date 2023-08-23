@@ -1,5 +1,6 @@
 package ru.practicum;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +11,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder
 public class EndpointHitDto {
-    @NotNull
+
     private String app;
-    @NotNull
+
     private String uri;
-    @NotNull
+
     private String ip;
-    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String timestamp;
 }

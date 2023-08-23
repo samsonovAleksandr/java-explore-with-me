@@ -169,10 +169,10 @@ public class EventServiceImpl implements EventService {
                     params.getOnlyAvailable(),
                     sort, PageRequest.of(pageNumber, size));
         }
-        client.createHit(request);
-        events = events.stream()
-                .peek(event -> event.setViews(client.getStatsUnique(request.getRequestURI()).getBody()))
-                .collect(Collectors.toList());
+//        client.createHit(request);
+//        events = events.stream()
+//                .peek(event -> event.setViews(client.getStatsUnique(request.getRequestURI()).getBody()))
+//                .collect(Collectors.toList());
         repository.saveAll(events);
         return toEventDtoList(events);
     }
@@ -181,7 +181,8 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public EventDto getPublicById(Long id, HttpServletRequest request) {
         Event event = repository.findByIdAndStateIn(id, List.of(State.PUBLISHED))
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
+                .orElseThrow(() -> new NotFoundException("Ивент не найен"));
+
         client.createHit(request);
         event.setViews(client.getStatsUnique(request.getRequestURI()).getBody());
         saveEvent(event);
@@ -276,7 +277,7 @@ public class EventServiceImpl implements EventService {
         if (eventDto.getParticipantLimit() != null) {
             event.setParticipantLimit(eventDto.getParticipantLimit());
         }
-        if (eventDto.getStateAction() != null) {
+
             if (eventDto.getStateAction() == StateAction.PUBLISH_EVENT) {
                 event.setState(State.PUBLISHED);
                 event.setPublishedOn(LocalDateTime.now());
@@ -286,7 +287,7 @@ public class EventServiceImpl implements EventService {
             } else if (eventDto.getStateAction() == StateAction.SEND_TO_REVIEW) {
                 event.setState(State.PENDING);
             }
-        }
+
         if (eventDto.getRequestModeration() != null) {
             event.setRequestModeration(eventDto.getRequestModeration());
         }
