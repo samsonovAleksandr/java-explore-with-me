@@ -169,10 +169,10 @@ public class EventServiceImpl implements EventService {
                     params.getOnlyAvailable(),
                     sort, PageRequest.of(pageNumber, size));
         }
-//        client.createHit(request);
-//        events = events.stream()
-//                .peek(event -> event.setViews(client.getStatsUnique(request.getRequestURI()).getBody()))
-//                .collect(Collectors.toList());
+        client.createHit(request);
+        events = events.stream()
+                .peek(event -> event.setViews(client.getStatsUnique(request.getRequestURI()).getBody()))
+                .collect(Collectors.toList());
         repository.saveAll(events);
         return toEventDtoList(events);
     }
