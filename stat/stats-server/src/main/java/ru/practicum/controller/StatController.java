@@ -11,7 +11,6 @@ import java.util.List;
 
 
 @RestController
-@Validated
 @ResponseBody
 @AllArgsConstructor
 public class StatController {
