@@ -1,7 +1,6 @@
 package ru.practicum.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHitDto;
 import ru.practicum.StatsDto;
