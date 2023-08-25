@@ -57,7 +57,7 @@ public class EventServiceImpl implements EventService {
     public EventDto create(NewEventDto newEventDto, Long userId) {
         Event event = EventMapper.toEvent(newEventDto);
         event.setInitiator(userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", userId))));
+                .orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", userId))));
         event.setCategory(categoryRepository.findById(newEventDto.getCategory())
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Категории с id %d не найдено", newEventDto.getCategory()))));
@@ -198,7 +198,7 @@ public class EventServiceImpl implements EventService {
     public EventDto getForUserById(Long userId, Long eventId) {
         Event event = getEventById(eventId);
         if (!userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", userId))).getId()
+                .orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", userId))).getId()
                 .equals(event.getInitiator().getId())) {
             throw new ValidationException("Вы не являетесь инициатором события.");
         } else {
@@ -211,7 +211,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDto update(Long userId, Long eventId, UpdateEventDto eventDto) {
         Event event = getEventById(eventId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", userId)));
         if (event.getState() == State.PUBLISHED) {
             throw new ConflictException("Невозможно изменить уже опубликованное событие");
         }
@@ -222,7 +222,7 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     public Event getEventById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Event с id %d не найдено", id)));
     }
 
     @Override

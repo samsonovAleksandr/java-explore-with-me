@@ -69,7 +69,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto cancel(Long requestId, Long userId) {
         User user = getUser(userId);
         Request request = repository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", requestId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Request с id %d не найдено", requestId)));
         if (!user.getId().equals(request.getRequester().getId())) {
             throw new ValidationException("Вы не запрашивали участие на это событие.");
         }
@@ -136,7 +136,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", id)));
     }
 
     @Override
@@ -149,8 +149,6 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public Event getEventById(Long id) {
         return eventRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Категории с id %d не найдено", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Event с id %d не найдено", id)));
     }
-
-
 }
