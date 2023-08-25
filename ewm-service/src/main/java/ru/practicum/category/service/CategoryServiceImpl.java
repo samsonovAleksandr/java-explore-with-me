@@ -9,7 +9,6 @@ import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
