@@ -123,7 +123,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<EventDto> getAllPublic(SearchEventParams params, int from, int size,
                                        HttpServletRequest request) {
         List<Event> events = List.of();

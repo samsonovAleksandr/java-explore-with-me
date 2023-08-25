@@ -3,6 +3,7 @@ package ru.practicum.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -85,6 +86,18 @@ public class ErrorHandler {
                 .message(e.getLocalizedMessage())
                 .reason(e.getMessage())
                 .status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handlerHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
+        log.debug("Получен статус 409 Conflict {}", e.getMessage(), e);
+        return ApiError.builder()
+                .timestamp(LocalDateTime.now())
+                .errors(List.of(e.getStackTrace()))
+                .message(e.getLocalizedMessage())
+                .reason(e.getMessage())
+                .status(HttpStatus.BAD_REQUEST).build();
     }
 
 }

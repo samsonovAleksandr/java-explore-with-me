@@ -45,7 +45,7 @@ public class BaseClient {
     }
 
     protected <T> ResponseEntity<EndpointHitDto> post(String path, T body) {
-        ResponseEntity<EndpointHitDto> response = rest.exchange(path, HttpMethod.POST, new HttpEntity<>(body, defaultHeaders()), EndpointHitDto.class);
+        ResponseEntity<EndpointHitDto> response = rest.exchange(path, HttpMethod.POST, new HttpEntity<>(body), EndpointHitDto.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }

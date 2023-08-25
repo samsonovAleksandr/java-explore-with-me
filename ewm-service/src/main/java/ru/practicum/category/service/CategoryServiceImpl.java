@@ -53,7 +53,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         Category category = getCategory(id);
-        if (categoryDto.getName().equals(category.getName())) throw new ConflictException("Имя категории не изменено");
         category.setName(categoryDto.getName());
         return categoryMapper.toCategoryDto(repository.save(category));
     }

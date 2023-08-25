@@ -72,6 +72,7 @@ public class StatsClient extends BaseClient {
 
     public ResponseEntity<EndpointHitDto> createHit(HttpServletRequest request) {
         EndpointHitDto hitDto = EndpointHitDto.builder()
+                .app("ewm-service")
                 .ip(request.getRemoteAddr())
                 .uri(request.getRequestURI())
                 .build();
