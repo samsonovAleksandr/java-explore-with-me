@@ -22,7 +22,7 @@ public class RequestController {
 
     @PostMapping("/users/{userId}/requests")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public RequestDto createRequest(@Positive @RequestParam Long eventId, @Positive @PathVariable Long userId) {
+    public RequestDto createRequest(@RequestParam Long eventId, @Positive @PathVariable Long userId) {
         return service.createRequest(eventId, userId);
     }
 

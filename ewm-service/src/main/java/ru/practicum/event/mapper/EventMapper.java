@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Component
 public class EventMapper {
 
-    public static Event toEvent(NewEventDto eventDto) {
+    public Event toEvent(NewEventDto eventDto) {
         return Event.builder()
                 .annotation(eventDto.getAnnotation())
                 .description(eventDto.getDescription())
@@ -37,7 +37,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventDto toEventDto(Event event, UserShortDto userShortDto, CategoryDto categoryDto) {
+    public EventDto toEventDto(Event event, UserShortDto userShortDto, CategoryDto categoryDto) {
         return EventDto.builder()
                 .annotation(event.getAnnotation())
                 .description(event.getDescription())
@@ -58,7 +58,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventShortDto toEventShortDto(Event event, UserShortDto userShortDto, CategoryDto categoryDto) {
+    public EventShortDto toEventShortDto(Event event, UserShortDto userShortDto, CategoryDto categoryDto) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .eventDate(event.getEventDate())
@@ -71,7 +71,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static Event update(Event event, UpdateEventDto eventDto, Category category) {
+    public Event update(Event event, UpdateEventDto eventDto, Category category) {
         if (eventDto.getPaid() != null) {
             event.setPaid(eventDto.getPaid());
         }

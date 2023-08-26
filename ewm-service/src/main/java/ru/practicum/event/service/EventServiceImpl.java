@@ -43,24 +43,27 @@ public class EventServiceImpl implements EventService {
 
     private final StatsClient client;
 
-    public EventServiceImpl(EventRepository repository, UserRepository userRepository, CategoryRepository categoryRepository, CategoryMapper categoryMapper, StatsClient client) {
+    private final EventMapper eventMapper;
+
+    public EventServiceImpl(EventRepository repository, UserRepository userRepository, CategoryRepository categoryRepository, CategoryMapper categoryMapper, StatsClient client, EventMapper eventMapper) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.client = client;
+        this.eventMapper = eventMapper;
     }
 
     @Override
     @Transactional
     public EventDto create(NewEventDto newEventDto, Long userId) {
-        Event event = EventMapper.toEvent(newEventDto);
+        Event event = eventMapper.toEvent(newEventDto);
         event.setInitiator(userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", userId))));
         event.setCategory(categoryRepository.findById(newEventDto.getCategory())
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Категории с id %d не найдено", newEventDto.getCategory()))));
-        return EventMapper.toEventDto(repository.save(event), UserMapper.toUserShortDto(event.getInitiator()),
+        return eventMapper.toEventDto(repository.save(event), UserMapper.toUserShortDto(event.getInitiator()),
                 categoryMapper.toCategoryDto(event.getCategory()));
     }
 
@@ -102,7 +105,7 @@ public class EventServiceImpl implements EventService {
             return List.of();
         }
         return events.stream()
-                .map(event -> EventMapper.toEventDto(event,
+                .map(event -> eventMapper.toEventDto(event,
                         UserMapper.toUserShortDto(event.getInitiator()),
                         categoryMapper.toCategoryDto(event.getCategory())))
                 .collect(Collectors.toList());
@@ -117,8 +120,8 @@ public class EventServiceImpl implements EventService {
         Category category = categoryRepository.findById(updateEventDto.getCategory())
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Категории с id %d не найдено", updateEventDto.getCategory())));
-        Event event1 = EventMapper.update(event, updateEventDto, category);
-        return EventMapper.toEventDto(saveEvent(event1),
+        Event event1 = eventMapper.update(event, updateEventDto, category);
+        return eventMapper.toEventDto(saveEvent(event1),
                 UserMapper.toUserShortDto(event.getInitiator()),
                 categoryMapper.toCategoryDto(event.getCategory()));
     }
@@ -133,7 +136,7 @@ public class EventServiceImpl implements EventService {
             return List.of();
         }
         return events.stream()
-                .map(event -> EventMapper.toEventDto(event,
+                .map(event -> eventMapper.toEventDto(event,
                         UserMapper.toUserShortDto(event.getInitiator()),
                         categoryMapper.toCategoryDto(event.getCategory())))
                 .collect(Collectors.toList());
@@ -198,7 +201,7 @@ public class EventServiceImpl implements EventService {
             return List.of();
         }
         return events.stream()
-                .map(event -> EventMapper.toEventDto(event,
+                .map(event -> eventMapper.toEventDto(event,
                         UserMapper.toUserShortDto(event.getInitiator()),
                         categoryMapper.toCategoryDto(event.getCategory())))
                 .collect(Collectors.toList());
@@ -213,7 +216,7 @@ public class EventServiceImpl implements EventService {
         client.createHit(request);
         event.setViews(client.getStatsUnique(request.getRequestURI()).getBody());
         saveEvent(event);
-        return EventMapper.toEventDto(event, UserMapper.toUserShortDto(event.getInitiator()),
+        return eventMapper.toEventDto(event, UserMapper.toUserShortDto(event.getInitiator()),
                 categoryMapper.toCategoryDto(event.getCategory()));
     }
 
@@ -226,7 +229,7 @@ public class EventServiceImpl implements EventService {
                 .equals(event.getInitiator().getId())) {
             throw new ValidationException("Вы не являетесь инициатором события.");
         } else {
-            return EventMapper.toEventDto(event, UserMapper.toUserShortDto(event.getInitiator()),
+            return eventMapper.toEventDto(event, UserMapper.toUserShortDto(event.getInitiator()),
                     categoryMapper.toCategoryDto(event.getCategory()));
         }
     }
@@ -244,9 +247,9 @@ public class EventServiceImpl implements EventService {
         Category category = categoryRepository.findById(eventDto.getCategory())
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Категории с id %d не найдено", eventDto.getCategory())));
-        Event event1 = EventMapper.update(event, eventDto, category);
+        Event event1 = eventMapper.update(event, eventDto, category);
         repository.save(event1);
-        return EventMapper.toEventDto(event1,
+        return eventMapper.toEventDto(event1,
                 UserMapper.toUserShortDto(event1.getInitiator()),
                 categoryMapper.toCategoryDto(event1.getCategory()));
     }
