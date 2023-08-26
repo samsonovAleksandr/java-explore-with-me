@@ -3,7 +3,6 @@ package ru.practicum.event.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.enums.State;
 import ru.practicum.enums.StateAction;
@@ -14,20 +13,11 @@ import ru.practicum.event.dto.UpdateEventDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.location.Location;
 import ru.practicum.user.dto.UserShortDto;
-import ru.practicum.user.mapper.UserMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
-
-    private static CategoryMapper categoryMapper;
-
-    public EventMapper(CategoryMapper categoryMapper) {
-        EventMapper.categoryMapper = categoryMapper;
-    }
 
     public static Event toEvent(NewEventDto eventDto) {
         return Event.builder()
@@ -122,18 +112,6 @@ public class EventMapper {
             event.setRequestModeration(eventDto.getRequestModeration());
         }
         return event;
-    }
-
-    public static List<EventDto> toEventDtoList(List<Event> events) {
-        if (events.isEmpty()) {
-            return List.of();
-        } else {
-            return events.stream()
-                    .map(event -> EventMapper.toEventDto(event,
-                            UserMapper.toUserShortDto(event.getInitiator()),
-                            categoryMapper.toCategoryDto(event.getCategory())))
-                    .collect(Collectors.toList());
-        }
     }
 }
 

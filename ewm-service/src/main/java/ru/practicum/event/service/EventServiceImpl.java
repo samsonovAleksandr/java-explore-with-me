@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -97,7 +98,14 @@ public class EventServiceImpl implements EventService {
             events = repository.findAllEventsForAdminBy(users, states, categories,
                     start, end, PageRequest.of(pageNumber, size));
         }
-        return EventMapper.toEventDtoList(events);
+        if (events.isEmpty()) {
+            return List.of();
+        }
+        return events.stream()
+                .map(event -> EventMapper.toEventDto(event,
+                        UserMapper.toUserShortDto(event.getInitiator()),
+                        categoryMapper.toCategoryDto(event.getCategory())))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -121,7 +129,14 @@ public class EventServiceImpl implements EventService {
         int pageNumber = (int) Math.ceil((double) from / size);
         List<Event> events = repository.findByInitiatorId(userId,
                 PageRequest.of(pageNumber, size, Sort.by("id").ascending())).toList();
-        return EventMapper.toEventDtoList(events);
+        if (events.isEmpty()) {
+            return List.of();
+        }
+        return events.stream()
+                .map(event -> EventMapper.toEventDto(event,
+                        UserMapper.toUserShortDto(event.getInitiator()),
+                        categoryMapper.toCategoryDto(event.getCategory())))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -179,7 +194,14 @@ public class EventServiceImpl implements EventService {
         }
         events = list;
         repository.saveAll(events);
-        return EventMapper.toEventDtoList(events);
+        if (events.isEmpty()) {
+            return List.of();
+        }
+        return events.stream()
+                .map(event -> EventMapper.toEventDto(event,
+                        UserMapper.toUserShortDto(event.getInitiator()),
+                        categoryMapper.toCategoryDto(event.getCategory())))
+                .collect(Collectors.toList());
     }
 
     @Override
