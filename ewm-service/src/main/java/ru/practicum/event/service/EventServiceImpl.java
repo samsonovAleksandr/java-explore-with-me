@@ -10,7 +10,6 @@ import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.enums.Sorts;
 import ru.practicum.enums.State;
-import ru.practicum.enums.StateAction;
 import ru.practicum.event.dto.EventDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.SearchEventParams;
@@ -30,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -61,9 +59,7 @@ public class EventServiceImpl implements EventService {
         event.setCategory(categoryRepository.findById(newEventDto.getCategory())
                 .orElseThrow(
                         () -> new NotFoundException(String.format("Категории с id %d не найдено", newEventDto.getCategory()))));
-        event = repository.save(event);
-
-        return EventMapper.toEventDto(event, UserMapper.toUserShortDto(event.getInitiator()),
+        return EventMapper.toEventDto(repository.save(event), UserMapper.toUserShortDto(event.getInitiator()),
                 categoryMapper.toCategoryDto(event.getCategory()));
     }
 
@@ -101,7 +97,7 @@ public class EventServiceImpl implements EventService {
             events = repository.findAllEventsForAdminBy(users, states, categories,
                     start, end, PageRequest.of(pageNumber, size));
         }
-        return toEventDtoList(events);
+        return EventMapper.toEventDtoList(events);
     }
 
     @Override
@@ -110,7 +106,13 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != State.PENDING) {
             throw new ConflictException("Вы не можете опубликовать уже опубликованное или отклонёное событие.");
         }
-        return update(event, updateEventDto);
+        Category category = categoryRepository.findById(updateEventDto.getCategory())
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Категории с id %d не найдено", updateEventDto.getCategory())));
+        Event event1 = EventMapper.update(event, updateEventDto, category);
+        return EventMapper.toEventDto(saveEvent(event1),
+                UserMapper.toUserShortDto(event.getInitiator()),
+                categoryMapper.toCategoryDto(event.getCategory()));
     }
 
     @Override
@@ -119,7 +121,7 @@ public class EventServiceImpl implements EventService {
         int pageNumber = (int) Math.ceil((double) from / size);
         List<Event> events = repository.findByInitiatorId(userId,
                 PageRequest.of(pageNumber, size, Sort.by("id").ascending())).toList();
-        return toEventDtoList(events);
+        return EventMapper.toEventDtoList(events);
     }
 
     @Override
@@ -177,7 +179,7 @@ public class EventServiceImpl implements EventService {
         }
         events = list;
         repository.saveAll(events);
-        return toEventDtoList(events);
+        return EventMapper.toEventDtoList(events);
     }
 
     @Override
@@ -211,11 +213,20 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDto update(Long userId, Long eventId, UpdateEventDto eventDto) {
         Event event = getEventById(eventId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User с id %d не найдено", userId)));
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(String.format("User с id %d не найдено", userId));
+        }
         if (event.getState() == State.PUBLISHED) {
             throw new ConflictException("Невозможно изменить уже опубликованное событие");
         }
-        return update(event, eventDto);
+        Category category = categoryRepository.findById(eventDto.getCategory())
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Категории с id %d не найдено", eventDto.getCategory())));
+        Event event1 = EventMapper.update(event, eventDto, category);
+
+        return EventMapper.toEventDto(saveEvent(event1),
+                UserMapper.toUserShortDto(event.getInitiator()),
+                categoryMapper.toCategoryDto(event.getCategory()));
     }
 
     @Override
@@ -234,65 +245,5 @@ public class EventServiceImpl implements EventService {
     private LocalDateTime fromString(String dateStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(dateStr, formatter);
-    }
-
-    private List<EventDto> toEventDtoList(List<Event> events) {
-        if (events.isEmpty()) {
-            return List.of();
-        } else {
-            return events.stream()
-                    .map(event -> EventMapper.toEventDto(event,
-                            UserMapper.toUserShortDto(event.getInitiator()),
-                            categoryMapper.toCategoryDto(event.getCategory())))
-                    .collect(Collectors.toList());
-        }
-    }
-
-    private EventDto update(Event event, UpdateEventDto eventDto) {
-        if (eventDto.getPaid() != null) {
-            event.setPaid(eventDto.getPaid());
-        }
-        if (eventDto.getEventDate() != null) {
-            event.setEventDate(eventDto.getEventDate());
-        }
-        if (eventDto.getAnnotation() != null && !eventDto.getAnnotation().isBlank()) {
-            event.setAnnotation(eventDto.getAnnotation());
-        }
-        if (eventDto.getDescription() != null && !eventDto.getDescription().isBlank()) {
-            event.setDescription(eventDto.getDescription());
-        }
-        if (eventDto.getLocation() != null) {
-            event.setLat(eventDto.getLocation().getLat());
-            event.setLon(eventDto.getLocation().getLon());
-        }
-        if (eventDto.getTitle() != null && !eventDto.getTitle().isBlank()) {
-            event.setTitle(eventDto.getTitle());
-        }
-        if (eventDto.getCategory() != null) {
-            event.setCategory(categoryRepository.findById(eventDto.getCategory())
-                    .orElseThrow(() -> new NotFoundException(
-                            String.format("Категории с id %d не найдено", eventDto.getCategory()))));
-        }
-        if (eventDto.getParticipantLimit() != null) {
-            event.setParticipantLimit(eventDto.getParticipantLimit());
-        }
-
-        if (eventDto.getStateAction() == StateAction.PUBLISH_EVENT) {
-            event.setState(State.PUBLISHED);
-            event.setPublishedOn(LocalDateTime.now());
-        } else if (eventDto.getStateAction() == StateAction.REJECT_EVENT ||
-                eventDto.getStateAction() == StateAction.CANCEL_REVIEW) {
-            event.setState(State.CANCELED);
-        } else if (eventDto.getStateAction() == StateAction.SEND_TO_REVIEW) {
-            event.setState(State.PENDING);
-        }
-
-        if (eventDto.getRequestModeration() != null) {
-            event.setRequestModeration(eventDto.getRequestModeration());
-        }
-
-        return EventMapper.toEventDto(saveEvent(event),
-                UserMapper.toUserShortDto(event.getInitiator()),
-                categoryMapper.toCategoryDto(event.getCategory()));
     }
 }
