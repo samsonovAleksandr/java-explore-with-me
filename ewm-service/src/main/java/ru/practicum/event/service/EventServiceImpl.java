@@ -245,8 +245,8 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Категории с id %d не найдено", eventDto.getCategory())));
         Event event1 = EventMapper.update(event, eventDto, category);
-
-        return EventMapper.toEventDto(saveEvent(event1),
+        repository.save(event1);
+        return EventMapper.toEventDto(event1,
                 UserMapper.toUserShortDto(event1.getInitiator()),
                 categoryMapper.toCategoryDto(event1.getCategory()));
     }

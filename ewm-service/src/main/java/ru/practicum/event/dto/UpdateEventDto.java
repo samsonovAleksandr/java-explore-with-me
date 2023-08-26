@@ -7,6 +7,7 @@ import ru.practicum.enums.StateAction;
 import ru.practicum.location.Location;
 
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 public class UpdateEventDto {
     @Size(min = 20, max = 2000)
     String annotation;
-
+    @NotNull
     Long category;
 
     @Size(min = 20, max = 7000)
