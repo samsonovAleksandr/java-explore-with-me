@@ -247,8 +247,8 @@ public class EventServiceImpl implements EventService {
         Event event1 = EventMapper.update(event, eventDto, category);
 
         return EventMapper.toEventDto(saveEvent(event1),
-                UserMapper.toUserShortDto(event.getInitiator()),
-                categoryMapper.toCategoryDto(event.getCategory()));
+                UserMapper.toUserShortDto(event1.getInitiator()),
+                categoryMapper.toCategoryDto(event1.getCategory()));
     }
 
     @Override
