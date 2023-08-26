@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class UpdateEventDto {
     @Size(min = 20, max = 2000)
     String annotation;
-    @NotNull
+
     Long category;
 
     @Size(min = 20, max = 7000)
