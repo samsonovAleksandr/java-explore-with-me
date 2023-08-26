@@ -26,7 +26,7 @@ public class EventMapper {
     private static CategoryMapper categoryMapper;
 
     public EventMapper(CategoryMapper categoryMapper) {
-        this.categoryMapper = categoryMapper;
+        EventMapper.categoryMapper = categoryMapper;
     }
 
     public static Event toEvent(NewEventDto eventDto) {
