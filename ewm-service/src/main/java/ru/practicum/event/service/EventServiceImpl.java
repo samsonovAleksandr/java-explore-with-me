@@ -117,9 +117,7 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != State.PENDING) {
             throw new ConflictException("Вы не можете опубликовать уже опубликованное или отклонёное событие.");
         }
-        Category category = categoryRepository.findById(updateEventDto.getCategory())
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Категории с id %d не найдено", updateEventDto.getCategory())));
+        Category category = categoryRepository.getReferenceById(event.getCategory().getId());
         Event event1 = eventMapper.update(event, updateEventDto, category);
         return eventMapper.toEventDto(saveEvent(event1),
                 UserMapper.toUserShortDto(event.getInitiator()),
@@ -244,9 +242,7 @@ public class EventServiceImpl implements EventService {
         if (event.getState() == State.PUBLISHED) {
             throw new ConflictException("Невозможно изменить уже опубликованное событие");
         }
-        Category category = categoryRepository.findById(eventDto.getCategory())
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Категории с id %d не найдено", eventDto.getCategory())));
+        Category category = categoryRepository.getReferenceById(event.getCategory().getId());
         Event event1 = eventMapper.update(event, eventDto, category);
         repository.save(event1);
         return eventMapper.toEventDto(event1,
