@@ -47,7 +47,6 @@ public class EventCustomRepositoryImpl implements EventCustomRepository {
                 .setFirstResult(pageable.getPageNumber()).getResultList();
     }
 
-    //переделать
     @Override
     public List<Event> findAllEventsForUserBy(String text, Boolean paid, List<Category> cats, LocalDateTime start,
                                               LocalDateTime end, boolean onlyAvailable, Sorts sort, Pageable pageable) {
