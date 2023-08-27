@@ -18,8 +18,7 @@ public class EndpointHitMapping {
                 .app(dto.getApp())
                 .ip(dto.getIp())
                 .uri(dto.getUri())
-                .timeEndpoint(LocalDateTime.parse(dto.getTimestamp(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timeEndpoint(LocalDateTime.now())
                 .build();
     }
 
