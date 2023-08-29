@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +25,12 @@ public class User {
     String name;
 
     String email;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "subs",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subs_id"))
+    List<User> subs;
 
     @Override
     public boolean equals(Object o) {
